@@ -48,3 +48,32 @@ const cats = [
     img: "images/kitten8.jpeg"
   }
 ]
+
+const catsRow = document.getElementById("catsRow")
+//loop over the array of data
+for (const cat of cats) {
+  const card = `
+  <div class="col col-6 col-md-3">
+    <div class="card">
+      <img src="${cat.thumb}" class="card-img-top" alt="placeholder kitten" data-bs-toggle="modal" data-bs-target="#exampleModal" data-fullimg="${cat.img}">
+      <div class="card-body">
+        <h5 class="card-title">${cat.name}</h5>
+        <p class="card-text">${cat.bio}</p>
+        <a href="#" class="btn btn-light">Like</a>
+      </div>
+    </div>
+</div><!--col ends-->`
+catsRow.insertAdjacentHTML("beforeend", card)
+}
+
+//adding event listener to the row usining event delegation
+catsRow.addEventListener("click", openModal)
+//e stands for event
+function openModal (e){
+  //delegates the eventto thetarget element if it contains class card-img-top
+  if(e.target.classList.contains("card-img-top")) {
+    //dataset to target data full image of cat from img dataset (its liked with the array), important for capstone
+    const fullSizeImage = e.target.dataset.fullimg
+    document.querySelector(".modal-body").innerHTML = `<img src="${fullSizeImage}" alt="placeholder kitten">`
+  }
+}
