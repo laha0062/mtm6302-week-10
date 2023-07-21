@@ -50,6 +50,7 @@ const cats = [
 ]
 
 const catsRow = document.getElementById("catsRow")
+if(catsRow){
 //loop over the array of data
 for (const cat of cats) {
   const card = `
@@ -62,7 +63,7 @@ for (const cat of cats) {
         <a href="#" class="btn btn-light like" data-catname="${cat.name}" data-catbio="${cat.bio}" data-catthumb="${cat.thumb}" data-catfullimg="${cat.img}">Like</a>
       </div>
     </div>
-</div><!--col ends-->`
+  </div><!--col ends-->`
 catsRow.insertAdjacentHTML("beforeend", card)
 }
 
@@ -77,7 +78,7 @@ function openModal (e){
     document.querySelector(".modal-body").innerHTML = `<img src="${fullSizeImage}" alt="placeholder kitten">`
   }
 }
-
+}
 /*--------------------------------
             Week 11
 ---------------------------------*/
@@ -146,4 +147,53 @@ function findCat(catName){
     }
   }
   return null
+}
+
+/*-----------------
+  Liked cats page 
+-----------------*/
+// display cats from local storage
+
+const likedCatsRow = document.getElementById("likedCatsRow")
+if(likedCatsRow) {
+  showCat()
+  function showCat(){
+  // if array contains one of more items
+  if(savedCats.length > 0){
+    const likedCards = []
+    for(const cat of savedCats){
+      const card = `
+      <div class="col col-6 col-md-3">
+        <div class="card">
+          <img src="${cat.thumb}" class="card-img-top" alt="placeholder kitten" data-bs-toggle="modal" data-bs-target="#exampleModal" data-fullimg="${cat.img}">
+          <div class="card-body">
+            <h5 class="card-title">${cat.name}</h5>
+            <p class="card-text">${cat.bio}</p>
+            <a href="#" class="btn btn-light remove" data-catname="${cat.name}" >Remove</a>
+          </div>
+        </div>
+      </div><!--col ends-->`
+      likedCards.push(card)
+    }
+    likedCatsRow.innerHTML = likedCards.join("")
+  }else{
+    likedCatsRow.innerHTML = "No cats were found"
+  }
+  }
+  // add event delegation for remove button
+  likedCatsRow.addEventListener("click", removeCat)
+  function removeCat(e){
+    if(e.target.classList.contains("remove")) {
+      e.preventDefault()
+      // get index of cat to remove from the savedCats array using findCat method
+      const removeCatIndex = findCat(e.target.dataset.catname)
+      console.log(removeCatIndex)
+      // remove cat from savedCats array
+      savedCats.splice(removeCatIndex, 1)
+
+      // update loca storage with new array
+      localStorage.setItem("mycats", JSON.stringify(savedCats))
+      showCat()
+    }
+  }
 }
